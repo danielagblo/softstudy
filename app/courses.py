@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 from pathlib import Path
 
 import config
@@ -11,6 +12,23 @@ from app.qa_engine import QAEngine
 
 
 ACTIVE_PATH = config.DATA_DIR / "active_course.json"
+
+
+def seed_repo_materials() -> None:
+    """Copy bundled repo materials into the writable runtime folder (needed on Vercel)."""
+    src = config.REPO_MATERIALS_DIR
+    dst = config.MATERIALS_DIR
+    if not src.exists():
+        return
+    dst.mkdir(parents=True, exist_ok=True)
+    for item in src.iterdir():
+        target = dst / item.name
+        if target.exists():
+            continue
+        if item.is_dir():
+            shutil.copytree(item, target)
+        elif item.is_file():
+            shutil.copy2(item, target)
 
 
 def _slug_ok(name: str) -> bool:
@@ -81,6 +99,7 @@ class CourseLibrary:
     def __init__(self) -> None:
         config.MATERIALS_DIR.mkdir(parents=True, exist_ok=True)
         config.DATA_DIR.mkdir(parents=True, exist_ok=True)
+        seed_repo_materials()
         ensure_course_folders()
         self.indexes: dict[str, MaterialsIndex] = {}
         self.active: str = self._load_active() or (list_course_names()[0] if list_course_names() else "Course_1")
