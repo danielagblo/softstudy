@@ -271,15 +271,17 @@
       <section class="panel">
         <h2>Publish files to a course</h2>
         <p class="meta" style="margin-top:0">
-          Each course has its own folder under <code>materials/</code>.
-          Upload PDF/TXT/MD/DOCX into the course you are studying on Zoom.
+          Type the <strong>course name</strong> (e.g. Biology, Math 101), choose your files,
+          then publish. A new course is created automatically if that name does not exist yet.
         </p>
-        <label for="uploadCourse" style="margin-top:0.7rem">Target course</label>
+        <label for="courseNameInput" style="margin-top:0.7rem">Course name</label>
+        <input id="courseNameInput" type="text" placeholder="e.g. Biology" maxlength="80" />
+        <label for="uploadCourse" style="margin-top:0.7rem">Or pick an existing course</label>
         <select id="uploadCourse" style="width:100%;border:1px solid var(--line);background:rgba(0,0,0,.25);color:var(--ink);border-radius:12px;padding:.75rem .9rem;font:inherit"></select>
         <label for="fileInput" style="margin-top:0.7rem">Choose files</label>
         <input id="fileInput" type="file" multiple accept=".pdf,.txt,.md,.docx,application/pdf,text/plain" />
         <div class="actions">
-          <button class="primary" id="uploadBtn" type="button">Publish to course</button>
+          <button class="primary" id="uploadBtn" type="button">Publish to named course</button>
         </div>
         <div class="meta" id="uploadMeta"></div>
 
@@ -311,6 +313,7 @@
     const materialsPath = document.getElementById("materialsPath");
     const courseSelect = document.getElementById("courseSelect");
     const uploadCourse = document.getElementById("uploadCourse");
+    const courseNameInput = document.getElementById("courseNameInput");
 
     function log(msg) {
       const stamp = new Date().toLocaleTimeString();
@@ -318,17 +321,22 @@
     }
 
     function fillCourseSelects(courses, active) {
-      const opts = (courses || []).map((c) => {
+      const opts = ['<option value="">— select existing —</option>'].concat((courses || []).map((c) => {
+        const name = typeof c === "string" ? c : c.name;
+        const chunks = typeof c === "object" ? c.chunks : null;
+        const label = chunks == null ? name : `${name} (${chunks})`;
+        return `<option value="${name}">${label}</option>`;
+      })).join("");
+      courseSelect.innerHTML = (courses || []).map((c) => {
         const name = typeof c === "string" ? c : c.name;
         const chunks = typeof c === "object" ? c.chunks : null;
         const label = chunks == null ? name : `${name} (${chunks})`;
         return `<option value="${name}">${label}</option>`;
       }).join("");
-      courseSelect.innerHTML = opts;
       uploadCourse.innerHTML = opts;
       if (active) {
         courseSelect.value = active;
-        uploadCourse.value = active;
+        if (!courseNameInput.value.trim()) courseNameInput.value = active;
       }
     }
 
@@ -390,6 +398,7 @@
         body: JSON.stringify({ name: name.trim() }),
       });
       await refreshStatus();
+      courseNameInput.value = name.trim();
       uploadCourse.value = name.trim();
       courseSelect.value = name.trim();
       log("Created course " + name.trim());
@@ -420,9 +429,10 @@
     async function uploadFiles() {
       const input = document.getElementById("fileInput");
       const meta = document.getElementById("uploadMeta");
-      const course = uploadCourse.value;
+      const course = (courseNameInput.value || uploadCourse.value || "").trim();
       if (!course) {
-        meta.textContent = "Pick a target course first.";
+        meta.textContent = "Type a course name first (e.g. Biology).";
+        courseNameInput.focus();
         return;
       }
       if (!input.files || !input.files.length) {
@@ -435,9 +445,15 @@
       meta.textContent = `Publishing ${input.files.length} file(s) → ${course}…`;
       const res = await fetch("/upload", { method: "POST", body: form });
       const data = await res.json();
-      meta.textContent = `Published ${(data.saved || []).length} to ${course}; skipped ${(data.skipped || []).length}.`;
+      if (!res.ok) {
+        meta.textContent = "Upload failed. Check the course name and file types.";
+        return;
+      }
+      meta.textContent = `Published ${(data.saved || []).length} file(s) to “${course}”; skipped ${(data.skipped || []).length}.`;
       input.value = "";
+      courseNameInput.value = course;
       await refreshStatus();
+      courseSelect.value = course;
       log(`Uploaded to ${course}: ${(data.saved || []).join(", ") || "none"}`);
     }
 
@@ -466,6 +482,10 @@
         }
       };
     }
+
+    uploadCourse.addEventListener("change", () => {
+      if (uploadCourse.value) courseNameInput.value = uploadCourse.value;
+    });
 
     document.getElementById("askBtn").addEventListener("click", ask);
     document.getElementById("rebuildBtn").addEventListener("click", rebuild);
