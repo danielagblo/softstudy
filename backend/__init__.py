@@ -1,0 +1,1 @@
+"""StudySoft API backend."""

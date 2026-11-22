@@ -1,0 +1,70 @@
+========================================
+  StudySoft — how to use (no coding)
+========================================
+
+WHAT YOU GET
+------------
+1) WEB PAGE  -> manage courses & upload notes
+   http://127.0.0.1:8000
+
+2) DESKTOP OVERLAY -> floats on top of Zoom/Meet
+   listens and shows answers from the active course
+
+
+START (EASIEST)
+---------------
+Double-click:  START_STUDYSOFT.bat
+
+That will:
+  - start the backend
+  - open the web page
+  - open the desktop overlay
+
+
+STOP
+----
+Click Quit on the overlay, then close the launcher window.
+Or double-click: STOP_STUDYSOFT.bat
+
+
+PUT YOUR 5 COURSES IN
+---------------------
+Option A (folders):
+  materials\Course_1\   <- put that course's PDFs/notes here
+  materials\Course_2\
+  materials\Course_3\
+  materials\Course_4\
+  materials\Course_5\
+
+  You can RENAME those folders to real names
+  (example: Biology, Math, Python).
+
+Option B (web upload):
+  Open http://127.0.0.1:8000
+  Choose the course -> Publish files
+
+
+DURING A ZOOM CLASS
+-------------------
+1. Start StudySoft
+2. On the overlay, pick the course you are in
+3. Click Start Listening
+4. Answers appear on the overlay from THAT course only
+
+
+CAN THIS GO FULLY ONLINE?
+-------------------------
+- The WEB control page CAN be hosted online later
+  (so you upload materials from anywhere).
+
+- The LISTENING OVERLAY must stay on your computer,
+  because it needs to hear Zoom/Meet audio on your PC.
+
+So the practical setup is:
+  PC app for live listening + optional online materials page.
+
+
+NEED HELP PUTTING THE WEB PART ONLINE?
+--------------------------------------
+Tell me and we can set hosting next
+(e.g. a simple cloud link for the control page).

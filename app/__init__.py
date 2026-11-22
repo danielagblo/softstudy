@@ -1,0 +1,1 @@
+"""StudySoft application package."""

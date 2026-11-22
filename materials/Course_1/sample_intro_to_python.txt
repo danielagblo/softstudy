@@ -1,0 +1,44 @@
+Introduction to Python — Course Notes
+
+What is Python?
+Python is a high-level, interpreted programming language known for readable syntax.
+It is widely used for data science, web development, automation, and education.
+
+Variables and data types
+A variable stores a value. Common types include int, float, str, bool, list, tuple, dict, and set.
+Example: age = 20 stores an integer. name = "Ada" stores a string.
+
+Lists vs tuples
+A list is mutable (you can change it after creation). Syntax uses square brackets: [1, 2, 3].
+A tuple is immutable. Syntax uses parentheses: (1, 2, 3).
+Use lists when you need to modify items; use tuples for fixed collections.
+
+Functions
+Define a function with def. Example:
+def add(a, b):
+    return a + b
+Functions help reuse logic and organize programs.
+
+Loops
+A for loop iterates over a sequence. A while loop repeats while a condition is true.
+Example: for item in items: print(item)
+
+Conditionals
+Use if, elif, and else to branch logic based on conditions.
+Example: if score >= 50: print("Pass") else: print("Fail")
+
+How do you read a file in Python?
+Use the open() function with a context manager:
+with open("notes.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+
+What is a dictionary?
+A dictionary maps keys to values. Example: student = {"name": "Sam", "score": 88}
+Access values with student["name"]. Keys must be unique and hashable.
+
+Explain the difference between == and is
+== compares values for equality. is compares object identity (whether two names point to the same object in memory).
+
+Calculate the average of a list of numbers
+def average(nums):
+    return sum(nums) / len(nums) if nums else 0
