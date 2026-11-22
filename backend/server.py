@@ -205,8 +205,9 @@ async def upload_materials(
         saved.append(dest.name)
 
     lib = _lib()
-    lib.set_active(course)
+    # Rebuild after files land, then activate the named course
     lib.reload_all(force=True)
+    lib.set_active(course)
     _refresh_qa()
     result = {
         "ok": True,

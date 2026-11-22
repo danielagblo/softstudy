@@ -11,3 +11,11 @@ dist/
 build/
 .idea/
 .vscode/
+
+# Keep personal course PDFs/notes local (not for GitHub)
+materials/**/*.pdf
+materials/Business Administration/
+materials/Critical Thinking/
+materials/Information in Society/
+materials/Professional Development/
+materials/Psychology/

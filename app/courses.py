@@ -166,8 +166,8 @@ class CourseLibrary:
             self._save_active()
 
     def set_active(self, course: str) -> MaterialsIndex:
-        if course not in self.courses():
-            course_dir(course)
+        course_dir(course)
+        if course not in self.indexes:
             self.indexes[course] = self.build_course(course)
         self.active = course
         self._save_active()
